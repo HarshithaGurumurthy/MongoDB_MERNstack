@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epic Tales Bookstore</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .success-popup, .error-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1001;
+            display: none;
+            animation: fadeInOut 3s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .success-popup {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .error-popup {
+            background-color: #f44336;
+            color: white;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
+
+        #customerDetailsPopup .popup-content {
+            width: 400px;
+            max-width: 90%;
+            padding: 30px;
+        }
+
+        #customerDetailsPopup input,
+        #customerDetailsPopup textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #customerDetailsPopup button {
+            font-size: 18px;
+            padding: 12px 24px;
+        }
+
+        .hero-image img {
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        #customerDetailsPopup .popup-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #customerDetailsPopup input,
+        #customerDetailsPopup textarea {
+            width: 90%;
+        }
+
+        .books-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            padding: 20px;
+        }
+
+        .book {
+            border: 1px solid #ddd;
+            padding: 30px;
+            text-align: center;
+            background-color: #F0F8FF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .book-image {
+            width: 240px;
+            height: 360px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        header {
+            padding: 20px 40px;
+        }
+
+        nav button {
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+
+        #purchaseConfirmation .popup-content {
+            width: 600px;
+            max-width: 90%;
+            padding: 40px;
+            text-align: center;
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        #purchaseConfirmation h3 {
+            font-size: 28px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        #purchaseConfirmation p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        #closePurchaseConfirmation {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        #closePurchaseConfirmation:hover {
+            background-color: #45a049;
+        }
+
+        .confirmation-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        #orders {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .order-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .order-id {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .order-books {
+            margin-bottom: 10px;
+        }
+
+        .order-book {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .order-total {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .track-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .track-button:hover {
+            background-color: #45a049;
+        }
+
+        #trackingPopup .popup-content {
+            width: 300px;
+            max-width: 90%;
+            padding: 30px;
+            text-align: center;
+        }
+
+        #trackingPopup h3 {
+            margin-bottom: 20px;
+        }
+
+        #trackingStatus {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        #closeTrackingPopup {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        #closeTrackingPopup:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="auth-container" id="authContainer">
+            <div class="auth-box">
+                <h1 class="welcome-text">Welcome to Epic Tales</h1>
+                <div id="loginForm" class="authForm">
+                    <h3>Login</h3>
+                    <input type="text" id="loginUsername" placeholder="Username" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <button id="loginButton" class="blue-button">Login</button>
+                    <p>Not registered? <span id="showRegister" class="link">Sign Up</span></p>
+                </div>
+                <div id="registerForm" class="authForm" style="display:none;">
+                    <h3>Register</h3>
+                    <input type="text" id="registerUsername" placeholder="Username" required>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                    <button id="registerButton" class="blue-button">Register</button>
+                    <p>Already registered? <span id="showLogin" class="link">Sign In</span></p>
+                </div>
+            </div>
+        </div>
+        <div id="loggedInContent" style="display:none;">
+            <header>
+                <h1>Epic Tales</h1>
+                <nav>
+                    <button id="homeBtn">Home</button>
+                    <button id="booksBtn">Books</button>
+                    <button id="cartBtn">Cart</button>
+                    <button id="orderHistoryBtn">Order History</button>
+                </nav>
+            </header>
+            <div class="content-wrapper">
+                <section id="homePage">
+                    <div class="hero-section">
+                        <div class="hero-image">
+                            <img src="bookstore.jpg" alt="Bookstore Hero Image" class="animated-image">
+                        </div>
+                        <div class="hero-content">
+                            <h2>Welcome to Epic Tales Bookstore</h2>
+                            <p>Discover a world of stories at Epic Tales. We offer a wide selection of books across various genres, from thrilling adventures to heartwarming romances. Our passion for literature drives us to provide you with the best reading experience possible. Whether you're a seasoned bookworm or just starting your reading journey, we have something for everyone. At Epic Tales, we believe that every book has the power to inspire, educate, and transform. Start your next literary adventure with us today!</p>
+                            <div class="category-section">
+                                <h3>Explore the categories</h3>
+                                <div class="genre-buttons">
+                                    <button class="genre-btn" data-genre="thriller">Thriller</button>
+                                    <button class="genre-btn" data-genre="romantic">Romantic</button>
+                                    <button class="genre-btn" data-genre="fiction">Fiction</button>
+                                    <button class="genre-btn" data-genre="non-fiction">Non-Fiction</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section id="booksPage" style="display:none;">
+                    <h2>Our Books</h2>
+                    <div id="booksContainer" class="books-container"></div>
+                </section>
+                <section id="cartSection" style="display:none;">
+                    <h2>Your Cart</h2>
+                    <ul id="cart-items">
+                        <!-- Cart items will be displayed here -->
+                    </ul>
+                    <p>Total: ₹<span id="total">0.00</span></p>
+                    <button id="checkout">Checkout</button>
+                </section>
+                <section id="orderHistory" style="display:none;">
+                    <h2>Your Orders</h2>
+                    <ul id="orders">
+                        <!-- Order history will be dynamically populated here -->
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p id="popup-message"></p>
+        </div>
+    </div>
+
+    <div id="customerDetailsPopup" class="popup">
+        <div class="popup-content">
+            <h3>Customer Details</h3>
+            <input type="text" id="customerName" placeholder="Name" required>
+            <input type="tel" id="customerPhone" placeholder="Phone Number" required>
+            <input type="email" id="customerEmail" placeholder="Email ID" required>
+            <textarea id="customerAddress" placeholder="Address" required></textarea>
+            <button id="confirmCustomerDetails">OK</button>
+        </div>
+    </div>
+
+    <div id="purchaseConfirmation" class="popup">
+        <div class="popup-content">
+            <div class="confirmation-icon">📚</div>
+            <h3>Thank You for Your Purchase!</h3>
+            <p>Your order has been successfully placed with Epic Tales Bookstore.</p>
+            <p>We're excited to bring you on a new literary journey!</p>
+            <p>You will receive a confirmation email shortly with your order details.</p>
+            <p>Happy reading!</p>
+            <button id="closePurchaseConfirmation">Continue Shopping</button>
+        </div>
+    </div>
+
+    <div id="trackingPopup" class="popup">
+        <div class="popup-content">
+            <h3>Order Tracking</h3>
+            <p id="trackingStatus"></p>
+            <button id="closeTrackingPopup">Close</button>
+        </div>
+    </div>
+
+    <div id="successPopup" class="success-popup"></div>
+    <div id="errorPopup" class="error-popup"></div>
+    
+    <script src="script.js"></script>
+</body>
+
+</html>
